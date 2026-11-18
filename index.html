@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Where AI Belongs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: a seminary faculty-workshop page, styled to match "Eight Weeks to Launch". Navy masthead with a gold rule, then four ruled parts: the course, a three-lane sorting board, the generated syllabus statement, and scenario tests. Colors follow Emory's public palette (navy and gold); type pairs a Caslon serif with a humanist sans. */
+:root{
+  --bg:#f4f5f7;--surface:#ffffff;--ink:#0c1a33;--muted:#4c586b;--line:#d5dbe4;
+  --navy:#012169;--navy-soft:#e6ebf5;--gold:#f2a900;--gold-ink:#6e4d00;--gold-soft:#fcf1d4;
+  --ok:#1f6b3a;--ok-soft:#e5f2e9;--warn:#9b2c1e;--warn-soft:#fbe9e6;--focus:#0b5fd6;
+  --font-read:"Libre Caslon Text",Georgia,"Times New Roman",serif;
+  --font-ui:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a1120;--surface:#111a2e;--ink:#e9edf5;--muted:#a9b4c8;--line:#27334f;
+  --navy:#a3b8ee;--navy-soft:#1a2747;--gold:#f2a900;--gold-ink:#f2c45a;--gold-soft:#2a2414;
+  --ok:#7fd49b;--ok-soft:#14301f;--warn:#ff9b8a;--warn-soft:#3a1d1a;--focus:#8fb4ff;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1120;--surface:#111a2e;--ink:#e9edf5;--muted:#a9b4c8;--line:#27334f;
+  --navy:#a3b8ee;--navy-soft:#1a2747;--gold:#f2a900;--gold-ink:#f2c45a;--gold-soft:#2a2414;
+  --ok:#7fd49b;--ok-soft:#14301f;--warn:#ff9b8a;--warn-soft:#3a1d1a;--focus:#8fb4ff;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+a{color:var(--navy)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+h1,h2,h3{font-family:var(--font-read);font-weight:400;text-wrap:balance;line-height:1.2;margin:0}
+.wrap{max-width:1160px;margin:0 auto;display:grid;gap:56px}
+
+.masthead{background:#012169;color:#fff;border-bottom:5px solid #f2a900;margin-bottom:36px;
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mh-in{max-width:1160px;margin:0 auto;padding-block:18px 20px;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-end;justify-content:space-between}
+.mh-kicker{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#d7def0;margin-bottom:4px}
+.mh-course{font-family:var(--font-read);font-size:clamp(20px,2.6vw,26px);color:#fff}
+.mh-mod{font-size:15px;color:#fff;border-left:2px solid #f2a900;padding-left:12px}
+
+.faiths{width:min(360px,100%);height:auto;color:var(--gold-ink)}
+.faithband{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.faithband small{font-size:14px;color:var(--muted)}
+.hero{display:grid;gap:14px}
+.hero>*{max-width:780px}
+.eyebrow{font-size:14px;font-weight:700;color:var(--gold-ink);letter-spacing:.04em}
+.hero h1{font-size:clamp(36px,5.4vw,56px)}
+.hero p{margin:0;color:var(--muted);font-size:18px;max-width:64ch}
+.byline b{color:var(--ink);font-weight:600}
+
+section{display:grid;gap:18px;min-width:0}
+.sec-head{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:22px}
+.step{font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-ink)}
+.sec-head h2{font-size:clamp(26px,3.4vw,34px)}
+.sec-head p{margin:0;color:var(--muted);max-width:70ch}
+
+/* course */
+.course{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr) minmax(0,1.4fr);gap:16px;background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--navy);padding:18px}
+.course label{display:grid;gap:6px;font-size:15px;font-weight:700}
+input[type=text],select,textarea{width:100%;font:16px/1.5 var(--font-ui);color:var(--ink);background:var(--surface);border:1px solid var(--muted);border-radius:2px;padding:9px 10px}
+
+/* board */
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.btn{font:700 15px var(--font-ui);background:var(--navy);color:var(--surface);border:0;border-radius:2px;padding:10px 16px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--navy)}
+.count{font-size:15px;color:var(--muted)}
+.tray{background:var(--surface);border:1px dashed var(--muted);padding:12px;display:flex;flex-wrap:wrap;gap:10px;min-height:64px;align-content:flex-start}
+.tray-label{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);width:100%}
+.lanes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.lane{background:var(--surface);border:1px solid var(--line);display:grid;grid-template-rows:auto 1fr;min-height:260px;min-width:0}
+.lane header{padding:12px 14px;border-bottom:1px solid var(--line);display:grid;gap:2px}
+.lane header b{font-family:var(--font-read);font-weight:400;font-size:20px}
+.lane header small{font-size:14px;color:var(--muted)}
+.lane[data-lane="allow"]{border-top:4px solid var(--ok)}
+.lane[data-lane="disclose"]{border-top:4px solid var(--gold)}
+.lane[data-lane="no"]{border-top:4px solid var(--warn)}
+.drop{padding:10px;display:flex;flex-direction:column;gap:8px}
+.lane.over{outline:3px dashed var(--focus);outline-offset:-3px}
+.card{font:600 15px/1.35 var(--font-ui);text-align:left;background:var(--bg);color:var(--ink);border:1px solid var(--muted);border-radius:2px;padding:10px 12px;cursor:grab;touch-action:none;user-select:none;width:100%;display:grid;gap:4px}
+.tray .card{width:auto;max-width:280px}
+.card .note{font-weight:400;font-size:14px;color:var(--muted)}
+.card .key{font-weight:400;font-size:13px;color:var(--muted)}
+.card.ghost{position:fixed;z-index:50;pointer-events:none;width:260px;box-shadow:0 10px 24px rgba(1,33,105,.3);background:var(--surface)}
+.card.dragging{opacity:.35}
+.lane .card[data-lane="allow"]{border-left:4px solid var(--ok)}
+.lane .card[data-lane="disclose"]{border-left:4px solid var(--gold)}
+.lane .card[data-lane="no"]{border-left:4px solid var(--warn)}
+.help{font-size:15px;color:var(--muted);margin:0}
+
+/* statement */
+.state{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:20px;align-items:start}
+.opts{display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);padding:18px}
+.opts fieldset{border:0;margin:0;padding:0;display:grid;gap:6px}
+.opts legend{font-weight:700;font-size:15px;margin-bottom:4px}
+.opts label{display:flex;gap:8px;align-items:flex-start;font-size:15px}
+.opts input{accent-color:var(--navy);margin-top:4px}
+.doc{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);padding:22px 24px;display:grid;gap:10px}
+.doc textarea{min-height:420px;font:16px/1.65 var(--font-read);border:1px solid var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.small{font-size:14px;color:var(--muted);margin:0}
+
+/* tests */
+.tests{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.test{background:var(--surface);border:1px solid var(--line);padding:16px 18px;display:grid;gap:10px;align-content:start}
+.test p{margin:0}
+.test .q{font-family:var(--font-read);font-size:17px}
+.verdict{font-size:15px;padding:8px 10px;border-left:4px solid var(--line);background:var(--bg)}
+.verdict.allow{border-color:var(--ok);background:var(--ok-soft)}
+.verdict.disclose{border-color:var(--gold);background:var(--gold-soft)}
+.verdict.no{border-color:var(--warn);background:var(--warn-soft)}
+.verdict.none{border-color:var(--muted)}
+
+.notes{background:var(--surface);border:1px solid var(--line);border-left:4px solid #f2a900;padding:22px;display:grid;gap:12px}
+.notes h2{font-size:24px}
+.notes ul{margin:0;padding-left:20px;display:grid;gap:8px;color:var(--muted)}
+.notes ul b{color:var(--ink)}
+footer{padding-top:18px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);display:grid;gap:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:860px){
+  .course,.lanes,.state,.tests{grid-template-columns:1fr}
+  .lane{min-height:140px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+html,body{margin:0}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="mh-in">
+    <div><span class="mh-kicker">Sample faculty workshop · Candler School of Theology</span><span class="mh-course">Generative AI in theological teaching</span></div>
+    <span class="mh-mod">20-minute self-paced session</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="faithband">
+      <svg class="faiths" viewBox="0 0 408 40" role="img" aria-label="Symbols of several faith traditions: cross, Star of David, crescent and star, dharma wheel, lotus, and flaming chalice" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <g transform="translate(4,4)"><path d="M16 2v28M8 11h16"/></g>
+        <g transform="translate(72,4)"><path d="M16 2 28 23H4Z"/><path d="M16 30 4 9h24Z"/></g>
+        <g transform="translate(140,4)"><path d="M21 4a13 13 0 1 0 0 24a10 10 0 1 1 0-24Z"/><path d="m27 12 1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8-2.1-1.9 2.8-.3Z"/></g>
+        <g transform="translate(208,4)"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="3"/><path d="M16 3v10M16 19v10M3 16h10M19 16h10M6.8 6.8l7 7M18.2 18.2l7 7M25.2 6.8l-7 7M13.8 18.2l-7 7"/></g>
+        <g transform="translate(276,4)"><path d="M16 26c-4-4-4-12 0-18c4 6 4 14 0 18Z"/><path d="M16 26c-5-1-10-6-11-13c6 0 10 6 11 13Z"/><path d="M16 26c5-1 10-6 11-13c-6 0-10 6-11 13Z"/><path d="M4 28h24"/></g>
+        <g transform="translate(344,4)"><path d="M6 12h20c0 7-4 11-10 11S6 19 6 12Z"/><path d="M16 23v6M10 30h12"/><path d="M16 10c-3-2-3-5 0-8c1 2 4 3 3 6c-.5 1.5-1.5 2-3 2Z"/></g>
+      </svg>
+      <small>Built for learners from many faith traditions</small>
+    </div>
+    <span class="eyebrow">Faculty development · interactive</span>
+    <h1>Where AI Belongs</h1>
+    <p>Every seminary course forms something AI could shortcut: close reading, proclamation, pastoral presence, honest reflection. Sort the ways students might use AI in your course, and this page drafts a syllabus statement you can adapt. Then test your statement against situations that come up in real classrooms.</p>
+    <p class="byline">Designed by <b>Keith Pace, D.M.E.</b> as a sample for Candler's Office of Digital Learning</p>
+  </div>
+
+  <!-- I. COURSE -->
+  <section>
+    <div class="sec-head">
+      <span class="step">Part I · Your course</span>
+      <h2>Start with what the course forms</h2>
+      <p>These details appear in your statement. Change them at any time.</p>
+    </div>
+    <div class="course">
+      <label for="cName">Course title<input type="text" id="cName" value="Interpreting the New Testament"></label>
+      <label for="cProg">Program
+        <select id="cProg"><option>Residential M.Div.</option><option selected>Hybrid M.Div.</option><option>Doctor of Ministry</option><option>Master of Theological Studies</option></select></label>
+      <label for="cForm">The course mainly forms students in
+        <select id="cForm"><option selected>close reading and interpretation of scripture</option><option>preaching and proclamation</option><option>pastoral care and presence</option><option>theological reflection and writing</option><option>historical understanding of the church</option><option>leadership in ministry contexts</option></select></label>
+    </div>
+  </section>
+
+  <!-- II. SORT -->
+  <section>
+    <div class="sec-head">
+      <span class="step">Part II · Sort the uses</span>
+      <h2>Draw your lines</h2>
+      <p id="sortHelp"><b>Drag each card</b> into one of the three columns. Each card shows a note to weigh once you place it. With a keyboard, focus a card and press <b>1</b> (allowed), <b>2</b> (with disclosure), <b>3</b> (not allowed), or <b>0</b> to send it back.</p>
+    </div>
+    <div class="tools">
+      <span class="count" id="sortCount" aria-live="polite"></span>
+      <div class="row"><button class="btn ghost" id="suggest">Suggest a starting point</button><button class="btn ghost" id="clear">Clear the board</button></div>
+    </div>
+    <div class="tray" id="tray" data-lane="tray" aria-label="Cards to sort"><span class="tray-label">To sort</span></div>
+    <div class="lanes">
+      <div class="lane" data-lane="allow"><header><b>Allowed</b><small>No disclosure needed</small></header><div class="drop" aria-label="Allowed uses"></div></div>
+      <div class="lane" data-lane="disclose"><header><b>Allowed with disclosure</b><small>Students say how they used it</small></header><div class="drop" aria-label="Allowed with disclosure"></div></div>
+      <div class="lane" data-lane="no"><header><b>Not allowed</b><small>The skill being formed is the point</small></header><div class="drop" aria-label="Not allowed"></div></div>
+    </div>
+  </section>
+
+  <!-- III. STATEMENT -->
+  <section>
+    <div class="sec-head">
+      <span class="step">Part III · Your statement</span>
+      <h2>A syllabus statement, drafted from your choices</h2>
+      <p>The draft updates as you sort. Choose how it sounds and what students owe you, then edit the text in your own voice.</p>
+    </div>
+    <div class="state">
+      <div class="opts">
+        <fieldset><legend>Tone</legend>
+          <label><input type="radio" name="tone" value="pastoral" checked> Pastoral: explains the why</label>
+          <label><input type="radio" name="tone" value="direct"> Direct: rules first, short</label>
+        </fieldset>
+        <fieldset><legend>How students disclose</legend>
+          <label><input type="radio" name="disc" value="note" checked> A short note at the end of the assignment</label>
+          <label><input type="radio" name="disc" value="log"> An appendix with the prompts they used</label>
+          <label><input type="radio" name="disc" value="talk"> A brief conversation with me</label>
+        </fieldset>
+        <fieldset><legend>Also include</legend>
+          <label><input type="checkbox" id="optVerify" checked> Students verify every claim and citation</label>
+          <label><input type="checkbox" id="optAccess" checked> Accessibility uses are always welcome</label>
+          <label><input type="checkbox" id="optAsk" checked> "If it's not listed, ask me"</label>
+        </fieldset>
+      </div>
+      <div class="doc">
+        <label for="stmt" class="small">Draft statement (editable)</label>
+        <textarea id="stmt"></textarea>
+        <div class="row">
+          <button class="btn" id="copy">Copy statement</button>
+          <button class="btn ghost" id="rebuild">Rebuild from my choices</button>
+          <span class="small" id="copyMsg" role="status"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IV. TEST -->
+  <section>
+    <div class="sec-head">
+      <span class="step">Part IV · Test your policy</span>
+      <h2>Would your statement hold up?</h2>
+      <p>Each situation below happens in seminary classrooms. The verdict comes from how you sorted the cards. If a verdict surprises you, go back and move a card.</p>
+    </div>
+    <div class="tests" id="tests" aria-live="polite"></div>
+  </section>
+
+  <aside class="notes" aria-label="Design notes">
+    <h2>Why this activity</h2>
+    <ul>
+      <li><b>It starts from formation, not fear.</b> Faculty decide what each assignment is forming, then place AI around that. The statement explains the reasoning, which students follow more readily than bare rules.</li>
+      <li><b>It continues the conversation Candler has started.</b> The Office of Digital Learning ran faculty workshops on generative AI in 2024 and 2025. This gives faculty something concrete to leave with: a statement for their own syllabus.</li>
+      <li><b>It works across programs.</b> The same sort works for a residential exegesis course, a hybrid preaching course, or a D.Min. cohort, and the scenarios include Contextual Education and D.Min. research.</li>
+      <li><b>Accessibility (WCAG 2.1 AA):</b> every drag has a keyboard equivalent, card placement is announced in text, and color is never the only signal.</li>
+    </ul>
+  </aside>
+
+  <footer>
+    <span>Prepared by Keith Pace · keithpace@me.com · keithpace.com</span>
+    <span>The scenarios are illustrative. This is an independent sample prepared for a job application, not an official page or policy of Emory University or Candler School of Theology, and the draft statement is a starting point, not legal or institutional guidance. Colors follow Emory's public brand palette for illustration only.</span>
+  </footer>
+</div>
+
+<script>
+document.documentElement.lang='en';
+(function(){
+const USES=[
+ {id:'brainstorm',t:'Brainstorm paper topics or sermon angles',n:'Low risk to learning goals. The thinking that follows is still the student\'s.',s:'allow'},
+ {id:'grammar',t:'Polish grammar and format citations',n:'Much like a writing center visit. Most policies allow this.',s:'allow'},
+ {id:'flash',t:'Make study flashcards for vocabulary or exams',n:'A study aid with little risk to assessment.',s:'allow'},
+ {id:'questions',t:'Generate questions to prepare for class discussion',n:'Can deepen preparation if students answer the questions themselves.',s:'allow'},
+ {id:'summary',t:'Summarize an assigned reading',n:'A summary can replace the slow reading that formation depends on. Consider asking students to read first, then compare.',s:'disclose'},
+ {id:'parse',t:'Check Greek or Hebrew parsing',n:'Useful as a check, risky as a substitute. AI tools still misparse, so students should confirm with a lexicon.',s:'disclose'},
+ {id:'translate',t:'Translate a secondary source from another language',n:'Opens up scholarship. Ask students to note machine translation and check key terms.',s:'disclose'},
+ {id:'roleplay',t:'Practice a pastoral care conversation with an AI role-play',n:'Can build confidence, but AI cannot model real grief or trauma. Pair it with debrief and supervision.',s:'disclose'},
+ {id:'feedback',t:'Get feedback on a draft before submitting',n:'Feedback is not authorship, but students should own every revision they make.',s:'disclose'},
+ {id:'sermon',t:'Generate a first draft of a sermon',n:'Proclamation is the skill being formed. Many homiletics faculty draw the line here.',s:'no'},
+ {id:'journal',t:'Write a theological reflection journal entry',n:'Reflection assesses the student\'s own formation. If AI writes it, what is being graded?',s:'no'},
+ {id:'litrev',t:'Draft sections of a D.Min. literature review',n:'AI tools invent citations. If allowed at all, every source must be verified by hand.',s:'no'}
+];
+const LANES={allow:'Allowed',disclose:'Allowed with disclosure',no:'Not allowed'};
+const SCEN=[
+ {id:'parse',q:'A student footnotes that she used an AI tool to check her parsing of Romans 5:1, then confirmed it in a standard Greek lexicon.'},
+ {id:'journal',q:'A reflection journal reads fluently but generically. Asked about it, the student says AI "helped organize his thoughts."'},
+ {id:'litrev',q:'A D.Min. chapter draft cites two journal articles that do not exist.'},
+ {id:'roleplay',q:'Before her first Contextual Education site visit, a student practiced a hospital visit with an AI role-play and wants to talk about it in class.'},
+ {id:'summary',q:'In discussion, a student confidently describes a reading\'s argument but cannot point to where the author makes it.'},
+ {id:'sermon',q:'A student submits a sermon manuscript and mentions that AI wrote "just the first draft."'}
+];
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let place=store.get('wab-place',null)||{brainstorm:'allow',grammar:'allow',sermon:'no',parse:'disclose'};
+const tray=document.getElementById('tray');
+const drops={};document.querySelectorAll('.lane').forEach(l=>drops[l.dataset.lane]=l.querySelector('.drop'));
+
+function cardEl(u){
+  const b=document.createElement('button');b.type='button';b.className='card';b.dataset.id=u.id;
+  b.innerHTML='<span class="t"></span><span class="note"></span>';
+  b.querySelector('.t').textContent=u.t;
+  wire(b);return b;
+}
+const els={};USES.forEach(u=>els[u.id]=cardEl(u));
+function render(){
+  USES.forEach(u=>{
+    const el=els[u.id],lane=place[u.id];
+    el.dataset.lane=lane||'';
+    el.querySelector('.note').textContent=lane?u.n:'';
+    el.setAttribute('aria-label',u.t+'. '+(lane?'Placed in '+LANES[lane]+'. '+u.n:'Not yet sorted.')+' Press 1, 2, or 3 to place, 0 to return.');
+    const target=lane?drops[lane]:tray;
+    if(el.parentElement!==target)target.appendChild(el);
+  });
+  const n=Object.keys(place).filter(k=>place[k]).length;
+  document.getElementById('sortCount').textContent=n+' of '+USES.length+' uses sorted';
+  store.set('wab-place',place);
+  if(!dirty)writeStatement();
+  renderTests();
+}
+function setLane(id,lane){if(lane)place[id]=lane;else delete place[id];render();}
+
+/* drag */
+function wire(el){
+  let g=null,startX=0,startY=0,moved=false;
+  el.addEventListener('pointerdown',e=>{if(e.button!==0)return;startX=e.clientX;startY=e.clientY;moved=false;el.setPointerCapture(e.pointerId);});
+  el.addEventListener('pointermove',e=>{
+    if(!el.hasPointerCapture(e.pointerId))return;
+    if(!moved&&Math.hypot(e.clientX-startX,e.clientY-startY)<6)return;
+    if(!moved){moved=true;g=el.cloneNode(true);g.classList.add('ghost');g.removeAttribute('id');document.body.appendChild(g);el.classList.add('dragging');}
+    g.style.left=(e.clientX-130)+'px';g.style.top=(e.clientY-20)+'px';
+    document.querySelectorAll('.lane').forEach(l=>{const r=l.getBoundingClientRect();l.classList.toggle('over',e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom);});
+  });
+  const end=e=>{
+    if(!moved)return;
+    let lane=null;document.querySelectorAll('.lane').forEach(l=>{const r=l.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)lane=l.dataset.lane;l.classList.remove('over');});
+    const tr=tray.getBoundingClientRect();const inTray=e.clientX>=tr.left&&e.clientX<=tr.right&&e.clientY>=tr.top&&e.clientY<=tr.bottom;
+    g.remove();g=null;el.classList.remove('dragging');moved=false;
+    if(lane)setLane(el.dataset.id,lane);else if(inTray)setLane(el.dataset.id,null);
+    el.focus();
+  };
+  el.addEventListener('pointerup',end);el.addEventListener('pointercancel',e=>{if(g){g.remove();g=null;el.classList.remove('dragging');}moved=false;});
+  el.addEventListener('keydown',e=>{const m={'1':'allow','2':'disclose','3':'no','0':null};if(e.key in m){e.preventDefault();setLane(el.dataset.id,m[e.key]);el.focus();}});
+}
+document.getElementById('suggest').onclick=()=>{USES.forEach(u=>place[u.id]=u.s);render();};
+document.getElementById('clear').onclick=()=>{place={};render();};
+
+/* statement */
+const stmt=document.getElementById('stmt');let dirty=false;
+const val=id=>document.getElementById(id).value.trim();
+function lower(t){return t.charAt(0).toLowerCase()+t.slice(1);}
+function list(lane){return USES.filter(u=>place[u.id]===lane).map(u=>'  • '+u.t);}
+function writeStatement(){
+  const tone=document.querySelector('input[name=tone]:checked').value;
+  const disc=document.querySelector('input[name=disc]:checked').value;
+  const course=val('cName')||'this course',prog=val('cProg'),form=val('cForm');
+  const L=[];
+  L.push('Generative AI in '+course);
+  L.push('');
+  if(tone==='pastoral'){
+    L.push(course+' is part of your formation in the '+prog+' program. Above all, it forms you in '+form+'. That formation happens in the slow, sometimes uncomfortable work of doing it yourself. AI tools can support that work in some places, and in others they would quietly do it for you. This statement tells you where I have drawn those lines and why.');
+  } else {
+    L.push('This statement sets out how you may use generative AI tools in '+course+' ('+prog+'). The course forms you in '+form+', so the lines below protect that work.');
+  }
+  const a=list('allow'),d=list('disclose'),n=list('no');
+  if(a.length){L.push('');L.push('You may use AI tools to:');L.push(...a);}
+  if(d.length){L.push('');L.push('You may use AI tools for the following only if you disclose it:');L.push(...d);
+    L.push(disc==='note'?'  To disclose, add a short note at the end of the assignment naming the tool and what you used it for.':disc==='log'?'  To disclose, attach an appendix listing the tool, the prompts you used, and how you changed what it gave you.':'  To disclose, tell me before the assignment is due so we can talk briefly about how you used it.');}
+  if(n.length){L.push('');L.push('You may not use AI tools to:');L.push(...n);
+    if(tone==='pastoral')L.push('  In these assignments the skill being formed is the point. Handing it to a tool would mean missing the formation the assignment exists for.');}
+  const extras=[];
+  if(document.getElementById('optVerify').checked)extras.push('You are responsible for every claim, quotation, and citation you submit. AI tools invent sources and misread texts, so verify everything against the original.');
+  if(document.getElementById('optAccess').checked)extras.push('Uses that support accessibility, such as text-to-speech, captions, or tools listed in an accommodation from your school\'s disability services office, are always welcome and need no disclosure.');
+  if(document.getElementById('optAsk').checked)extras.push('If a use is not listed here, ask me before you try it. I would much rather have that conversation than guess afterward.');
+  if(extras.length){L.push('');L.push(...extras);}
+  L.push('');
+  L.push(tone==='pastoral'?'Using AI in ways this statement does not allow will be handled under the school\'s honor code. My hope is that we never need that sentence, and that this statement helps us talk honestly about these tools together.':'Using AI in ways this statement does not allow will be handled under the school\'s honor code.');
+  stmt.value=L.join('\n');
+}
+stmt.addEventListener('input',()=>{dirty=true;});
+['cName','cProg','cForm'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{if(!dirty)writeStatement();}));
+document.querySelectorAll('.opts input').forEach(i=>i.addEventListener('change',()=>{if(!dirty)writeStatement();}));
+document.getElementById('rebuild').onclick=()=>{dirty=false;writeStatement();document.getElementById('copyMsg').textContent='Rebuilt from your current choices.';};
+document.getElementById('copy').onclick=()=>{const m=document.getElementById('copyMsg');
+  try{navigator.clipboard.writeText(stmt.value).then(()=>m.textContent='Copied.',()=>{stmt.select();m.textContent='Selected. Press Ctrl+C or Cmd+C to copy.';});}catch(e){stmt.select();m.textContent='Selected. Press Ctrl+C or Cmd+C to copy.';}};
+
+/* tests */
+function renderTests(){
+  const host=document.getElementById('tests');
+  host.innerHTML=SCEN.map(s=>{const u=USES.find(x=>x.id===s.id),lane=place[s.id];
+    const v=!lane?'<div class="verdict none"><b>Your policy does not address this yet.</b> Sort "'+u.t+'" to cover it.</div>'
+      :lane==='allow'?'<div class="verdict allow"><b>Allowed.</b> Under your statement this is fine as it stands.</div>'
+      :lane==='disclose'?'<div class="verdict disclose"><b>Allowed with disclosure.</b> Fine if the student disclosed it as your statement asks. If not, start with a conversation.</div>'
+      :'<div class="verdict no"><b>Not allowed.</b> Your statement covers this. Refer to your honor code process.</div>';
+    return '<div class="test"><p class="q">'+s.q+'</p>'+v+'<p class="small">Relevant card: '+u.t+'</p></div>';}).join('');
+}
+render();
+})();
+</script>
+</body>
+</html>
